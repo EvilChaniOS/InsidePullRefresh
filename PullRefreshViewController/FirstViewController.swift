@@ -14,23 +14,34 @@ class FirstViewController: PullRefreshViewController, UITableViewDataSource, UIT
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         initTableView()
+//        print("tabbarHeight = \(self.tabBarController?.tabBar.frame.height)")
+//        view.backgroundColor = UIColor.redColor()
+//        print("view.frame = \(view.frame)")
     }
     
     private func initTableView() {
         tableView = UITableView(frame: view.frame)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = UIColor.lightGrayColor()
+//        tableView.backgroundColor = UIColor.lightGrayColor()
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
         
         refreshBlock = { () -> () in
             self.performSelector(#selector(self.refreshFinish), withObject: nil, afterDelay: 2)
         }
+        
+        loadMoreBlock = { () -> () in
+            self.performSelector(#selector(self.loadMoreFinish), withObject: nil, afterDelay: 2)
+        }
     }
     
     func refreshFinish() {
         endRefresh()
+    }
+    
+    func loadMoreFinish() {
+        endLoadMore()
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,7 +54,7 @@ class FirstViewController: PullRefreshViewController, UITableViewDataSource, UIT
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 30
+        return 15
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

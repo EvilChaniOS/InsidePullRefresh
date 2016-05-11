@@ -12,17 +12,27 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     
     var tableView: UITableView!
     var refreshView: RefreshView!
+    var loadMoreView: RefreshView!
     var tableHeaderView: UIView!
+    var tableFooterView: UIView!
     var isRefreshing = false
+    var isLoadingMore = false
+    var tableViewInsetTop: CGFloat = 64
+    var tableViewInsetBottom: CGFloat = 49
     
     struct Constant {
-        static let refreshHeight: CGFloat = 44
-        static let tableViewInsetTop: CGFloat = 64
+        static let refreshViewHeight: CGFloat = 44
     }
     
     var refreshBlock: (() -> ())? {
         didSet {
             tableView.tableHeaderView = tableHeaderView
+        }
+    }
+    
+    var loadMoreBlock: (() -> ())? {
+        didSet {
+            tableView.tableFooterView = tableFooterView
         }
     }
 
@@ -42,6 +52,10 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: CGRectGetWidth(UIScreen.mainScreen().bounds), height: 0))
         refreshView = RefreshView(frame: CGRect(x: 0, y: -44, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: 44))
         tableHeaderView.addSubview(refreshView)
+        
+        tableFooterView = UIView(frame:  CGRect(x: 0, y: 0, width: CGRectGetWidth(UIScreen.mainScreen().bounds), height: 0))
+        loadMoreView = RefreshView(frame: CGRect(x: 0, y: 0, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: 44))
+        tableFooterView.addSubview(loadMoreView)
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
@@ -61,6 +75,13 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         if (refreshOffset > 60 && refreshBlock != nil && !isRefreshing) {
             beginRefresh()
         }
+        
+        let loadMoreOffset = scrollView.contentSize.height - scrollView.contentOffset.y - (view.frame.height - scrollView.contentInset.bottom)
+        print("scrollView.contentInset.bottom= \(scrollView.contentInset.bottom)")
+        print("loadMoreOffset = \(loadMoreOffset)")
+        if (loadMoreOffset < -60 && loadMoreBlock != nil && !isLoadingMore) {
+            beginLoadMore()
+        }
     }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
@@ -77,7 +98,7 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
             refreshBlock()
         }
         UIView.animateKeyframesWithDuration(0.3, delay: 0, options: .BeginFromCurrentState, animations: {
-            self.tableView.contentInset.top = Constant.refreshHeight + Constant.tableViewInsetTop
+            self.tableView.contentInset.top = Constant.refreshViewHeight + self.tableViewInsetTop
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset
         }) { (finished: Bool) in
             
@@ -88,7 +109,31 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         refreshView.endRefereshing()
         isRefreshing = false
         UIView.animateWithDuration(0.5) { 
-            self.tableView.contentInset.top = Constant.tableViewInsetTop
+            self.tableView.contentInset.top = self.tableViewInsetTop
+            self.tableView.scrollIndicatorInsets = self.tableView.contentInset
+        }
+    }
+    
+    func beginLoadMore() {
+        loadMoreView.beginRefreshing()
+        isLoadingMore = true
+        if let loadMoreBlock = loadMoreBlock {
+            loadMoreBlock()
+        }
+        UIView.animateWithDuration(0.2) {
+            var inset = self.tableView.contentInset
+            inset.bottom = inset.bottom + Constant.refreshViewHeight
+            self.tableView.contentInset = inset
+        }
+    }
+    
+    func endLoadMore() {
+        loadMoreView.endRefereshing()
+        isLoadingMore = false
+        UIView.animateWithDuration(0.2) {
+            var inset = self.tableView.contentInset
+            inset.bottom = self.tableViewInsetBottom
+            self.tableView.contentInset = inset
         }
     }
     
