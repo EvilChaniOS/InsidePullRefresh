@@ -23,7 +23,7 @@ class FirstViewController: PullRefreshViewController, UITableViewDataSource, UIT
         tableView = UITableView(frame: view.frame)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.backgroundColor = UIColor.orangeColor()
+//        tableView.backgroundColor = UIColor.orangeColor()
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
         
