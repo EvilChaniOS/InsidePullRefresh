@@ -11,8 +11,14 @@ import UIKit
 class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     
     var tableView: UITableView!
-    var refreshView: UIView!
+    var refreshView: RefreshView!
     var tableHeaderView: UIView!
+    var isRefreshing = false
+    
+    struct Constant {
+        static let refreshHeight: CGFloat = 44
+        static let tableViewInsetTop: CGFloat = 64
+    }
     
     var refreshBlock: (() -> ())? {
         didSet {
@@ -40,26 +46,50 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         print("scrollViewDidScroll")
+        print("scrollview.contentOffset = \(scrollView.contentOffset)")
+        print("scrollView.contentInset.top = \(scrollView.contentInset.top)")
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        
+        print("scrollViewWillBeginDragging")
     }
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        
+        print("scrollViewDidEndDragging:willDecelerate")
+//        print("scrollview.contentOffset = \(scrollView.contentOffset)")
+        let refreshOffset = -scrollView.contentOffset.y - scrollView.contentInset.top
+        if (refreshOffset > 60 && refreshBlock != nil && !isRefreshing) {
+            beginRefresh()
+        }
     }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        
+        print("scrollViewDidEndDecelerating")
     }
     
-    func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
-        
+    func beginRefresh() {
+        if (isRefreshing) {
+            return
+        }
+        isRefreshing = true
+        refreshView.beginRefreshing()
+        if let refreshBlock = refreshBlock {
+            refreshBlock()
+        }
+        UIView.animateKeyframesWithDuration(0.3, delay: 0, options: .BeginFromCurrentState, animations: {
+            self.tableView.contentInset.top = Constant.refreshHeight + Constant.tableViewInsetTop
+            self.tableView.scrollIndicatorInsets = self.tableView.contentInset
+        }) { (finished: Bool) in
+            
+        }
     }
     
     func endRefresh() {
-        
+        refreshView.endRefereshing()
+        isRefreshing = false
+        UIView.animateWithDuration(0.5) { 
+            self.tableView.contentInset.top = Constant.tableViewInsetTop
+        }
     }
     
 }

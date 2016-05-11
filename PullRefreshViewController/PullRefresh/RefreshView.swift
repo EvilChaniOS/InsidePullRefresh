@@ -16,14 +16,25 @@ class RefreshView: UIView {
         super.init(frame: frame)
         titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         addSubview(titleLabel)
-        titleLabel.text = "请下拉刷新"
         titleLabel.textAlignment = NSTextAlignment.Center
-        titleLabel.backgroundColor = UIColor.brownColor()
-        backgroundColor = UIColor.blueColor()
+        titleLabel.backgroundColor = UIColor(red: 167 / 255.0, green: 222 / 255.0, blue: 232 / 255.0, alpha: 1)
+        resetLabel()
+    }
+    
+    private func resetLabel() {
+        titleLabel.text = "请下拉刷新"
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    func beginRefreshing() {
+        titleLabel.text = "刷新中"
+    }
+    
+    func endRefereshing() {
+        resetLabel()
     }
 
     /*
