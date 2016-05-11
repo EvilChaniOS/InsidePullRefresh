@@ -1,1 +1,1 @@
-推荐先看 PullRefresh，简单的下拉刷新。再看 PullRefreshAndLoadMore，下拉刷新和加载更多。同时结合内部视频来看。
+简单的下拉刷新，结合内部视频来理解。
