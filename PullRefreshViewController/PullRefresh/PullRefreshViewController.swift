@@ -51,11 +51,11 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         super.loadView()
         // tableHeaderView 的高度设为0，是为了让它的高度不影响我们的计算，减少复杂度。大家可以设为 44 看看。
         tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: CGRectGetWidth(UIScreen.mainScreen().bounds), height: 0))
-        refreshView = RefreshView(frame: CGRect(x: 0, y: -44, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: 44))
+        refreshView = RefreshView(frame: CGRect(x: 0, y: -Constant.refreshViewHeight, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: Constant.refreshViewHeight))
         tableHeaderView.addSubview(refreshView)
         
         tableFooterView = UIView(frame:  CGRect(x: 0, y: 0, width: CGRectGetWidth(UIScreen.mainScreen().bounds), height: 0))
-        loadMoreView = RefreshView(frame: CGRect(x: 0, y: 0, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: 44))
+        loadMoreView = RefreshView(frame: CGRect(x: 0, y: 0, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: Constant.refreshViewHeight))
         tableFooterView.addSubview(loadMoreView)
     }
     
@@ -86,6 +86,7 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         print("scrollViewDidEndDragging:willDecelerate")
         initInsets()
         let refreshOffset = -scrollView.contentOffset.y - scrollView.contentInset.top
+        // 位移超过 60 开始刷新。也可以设置成 50、44 等。
         if (refreshOffset > 60 && refreshBlock != nil && !isRefreshing) {
             beginRefresh()
         }
