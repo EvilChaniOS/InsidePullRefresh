@@ -49,6 +49,7 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     
     override func loadView() {
         super.loadView()
+        // tableHeaderView 的高度设为0，是为了让它的高度不影响我们的计算，减少复杂度。大家可以设为 44 看看。
         tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: CGRectGetWidth(UIScreen.mainScreen().bounds), height: 0))
         refreshView = RefreshView(frame: CGRect(x: 0, y: -44, width:  CGRectGetWidth(UIScreen.mainScreen().bounds), height: 44))
         tableHeaderView.addSubview(refreshView)
@@ -59,6 +60,7 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func initInsets() {
+        // 动态获取默认的 tableViewInsetTop 和 tableViewInsetBottom，比如底部有无 Tabbar、顶部有无导航栏，会影响它们的具体数值
         if (tableViewInsetTop == -1) {
             tableViewInsetTop = self.tableView.contentInset.top
         }
