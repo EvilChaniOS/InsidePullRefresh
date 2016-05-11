@@ -73,6 +73,9 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         print("scrollViewDidScroll")
         print("scrollview.contentOffset = \(scrollView.contentOffset)")
 //        print("scrollView.contentInset = \(scrollView.contentInset)")
+        let refreshOffset = -scrollView.contentOffset.y - scrollView.contentInset.top
+        // 研究下拉刷新时，建议把其它位置的 log 注释掉，只打印下面一行
+        print("refreshOffset<\(refreshOffset)> = -contentOffset.y <\(scrollView.contentOffset.y)> - contentInset.top<\(scrollView.contentInset.top)>")
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
@@ -109,7 +112,9 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
             refreshBlock()
         }
         UIView.animateKeyframesWithDuration(0.3, delay: 0, options: .BeginFromCurrentState, animations: {
+            // 把 contentInsetTop 设为刷新头高度加上初始状态时的值，露出刷新头，保持在那个位置等待刷新结束
             self.tableView.contentInset.top = Constant.refreshViewHeight + self.tableViewInsetTop
+            // scrollIndicator，即旁边的滚动提示，看起来更好些，也可以不设置。
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset
         }) { (finished: Bool) in
             
@@ -119,7 +124,8 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     func endRefresh() {
         refreshView.endRefereshing()
         isRefreshing = false
-        UIView.animateWithDuration(0.5) { 
+        UIView.animateWithDuration(0.5) {
+            // 把 contentInsetTop 设为初始状态时候的值，恢复原位
             self.tableView.contentInset.top = self.tableViewInsetTop
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset
         }
