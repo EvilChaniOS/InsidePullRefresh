@@ -23,7 +23,7 @@ class FirstViewController: PullRefreshViewController, UITableViewDataSource, UIT
         tableView = UITableView(frame: view.frame)
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.backgroundColor = UIColor.lightGrayColor()
+        tableView.backgroundColor = UIColor.orangeColor()
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
         
@@ -54,7 +54,7 @@ class FirstViewController: PullRefreshViewController, UITableViewDataSource, UIT
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 15
+        return 30
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

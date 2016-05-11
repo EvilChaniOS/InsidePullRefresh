@@ -70,7 +70,7 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         print("scrollViewDidScroll")
         print("scrollview.contentOffset = \(scrollView.contentOffset)")
-        print("scrollView.contentInset = \(scrollView.contentInset)")
+//        print("scrollView.contentInset = \(scrollView.contentInset)")
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
@@ -80,7 +80,6 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         print("scrollViewDidEndDragging:willDecelerate")
         initInsets()
-//        print("scrollview.contentOffset = \(scrollView.contentOffset)")
         let refreshOffset = -scrollView.contentOffset.y - scrollView.contentInset.top
         if (refreshOffset > 60 && refreshBlock != nil && !isRefreshing) {
             beginRefresh()
