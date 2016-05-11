@@ -17,8 +17,8 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     var tableFooterView: UIView!
     var isRefreshing = false
     var isLoadingMore = false
-    var tableViewInsetTop: CGFloat = 64
-    var tableViewInsetBottom: CGFloat = 49
+    var tableViewInsetTop: CGFloat = -1
+    var tableViewInsetBottom: CGFloat = -1
     
     struct Constant {
         static let refreshViewHeight: CGFloat = 44
@@ -58,10 +58,19 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
         tableFooterView.addSubview(loadMoreView)
     }
     
+    func initInsets() {
+        if (tableViewInsetTop == -1) {
+            tableViewInsetTop = self.tableView.contentInset.top
+        }
+        if (tableViewInsetBottom == -1) {
+            tableViewInsetBottom = self.tableView.contentInset.bottom
+        }
+    }
+    
     func scrollViewDidScroll(scrollView: UIScrollView) {
         print("scrollViewDidScroll")
         print("scrollview.contentOffset = \(scrollView.contentOffset)")
-        print("scrollView.contentInset.top = \(scrollView.contentInset.top)")
+        print("scrollView.contentInset = \(scrollView.contentInset)")
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
@@ -70,6 +79,7 @@ class PullRefreshViewController: UIViewController, UIScrollViewDelegate {
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         print("scrollViewDidEndDragging:willDecelerate")
+        initInsets()
 //        print("scrollview.contentOffset = \(scrollView.contentOffset)")
         let refreshOffset = -scrollView.contentOffset.y - scrollView.contentInset.top
         if (refreshOffset > 60 && refreshBlock != nil && !isRefreshing) {
